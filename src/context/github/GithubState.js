@@ -8,8 +8,20 @@ import GithubReducer from "./githubReducer";
 
 import { SEARCH_USERS, GET_USER, CLEAR_USERS, SET_LOADING } from "../../types";
 
-// store the functions and the initial State
+// get the values for secrets based on environment
 
+let githubClientId;
+let githubClientSecret;
+
+if (process.env.NODE_ENV !== "production") {
+  githubClientId = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  githubClientSecret = process.env.REACT_APP_GITHUB_CLIENT_SECRET;
+} else {
+  githubClientId = process.env.GITHUB_CLIENT_ID;
+  githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
+}
+
+// store the functions and the initial State
 const GithubState = (props) => {
   // initial state
   const initialState = {
@@ -28,7 +40,7 @@ const GithubState = (props) => {
     setLoading();
 
     const res = await axios.get(
-      `https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+      `https://api.github.com/search/users?q=${text}&client_id=${githubClientId}&client_secret=${githubClientSecret}`
     );
 
     // after fetching we have to dispatch it to reducer.
@@ -45,7 +57,7 @@ const GithubState = (props) => {
     setLoading();
 
     const res = await axios.get(
-      `https://api.github.com/users/${username}?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
+      `https://api.github.com/users/${username}?client_id=${githubClientId}&client_secret=${githubClientSecret}`
     );
 
     dispatch({
